@@ -16,13 +16,6 @@ def is_valid_ip(ip):
 def generate_ip_addresses(count):
     return [generate_random_ip() for _ in range(count)]
 
-# Find the most common IP address in the list
-def most_common_ip(ip_list):
-    if not ip_list:
-        return None
-    ip_counter = Counter(ip_list)
-    return ip_counter.most_common(1)[0][0]
-
 # Save IP addresses to a text file with validity status
 def save_to_file(ip_list):
     file_name = "ip.txt"
@@ -70,48 +63,18 @@ def handle_webhook(stdscr):
     
     curses.curs_set(0)
 
-# Handle the process of generating and displaying IPs locally
-def handle_local_generation(stdscr):
-    curses.curs_set(1)
-    stdscr.clear()
-    stdscr.addstr(0, 0, "Enter the number of IPs to generate (1-1000000):")
-    curses.echo()
-    count = int(stdscr.getstr().decode('utf-8').strip())
-    
-    ips = generate_ip_addresses(count)
-    most_common = most_common_ip(ips)
-    
-    stdscr.clear()
-    stdscr.addstr(0, 0, f"Most Common IP: {most_common}")
-    
-    y = 1
-    for i, ip in enumerate(ips):
-        stdscr.addstr(y, 0, f"{i + 1}: {ip} {'valid' if is_valid_ip(ip) else 'invalid'}")
-        y += 1
-        if y >= curses.LINES - 2:
-            stdscr.addstr(y, 0, "Scroll down to see more...")
-            break
-    
-    stdscr.addstr(y + 1, 0, "Generation finished ✔️")
-    stdscr.refresh()
-    stdscr.getch()
-    curses.curs_set(0)
-
 # Main function to handle the menu and user input
 def main(stdscr):
     curses.curs_set(0)
     stdscr.clear()
     stdscr.addstr(0, 0, "1. Send IPs to Webhook")
-    stdscr.addstr(1, 0, "2. Generate IPs Here")
-    stdscr.addstr(2, 0, "Select an option (1 or 2):")
+    stdscr.addstr(1, 0, "Select an option (1):")
     stdscr.refresh()
     
     choice = stdscr.getch()
     
     if choice == ord('1'):
         handle_webhook(stdscr)
-    elif choice == ord('2'):
-        handle_local_generation(stdscr)
     else:
         display_message(stdscr, "Invalid choice. Please restart the application.")
 
